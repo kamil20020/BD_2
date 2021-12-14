@@ -35,6 +35,7 @@ INNER JOIN BD_2.ABSTRACT_PRODUCT a_p ON p_s.Abstract_Product_Id = a_p.Id
 INNER JOIN BD_2.Producer ON a_p.Producer_Id = Producer.Id 
 INNER JOIN BD_2.PRODUCT_CATEGORY p_c ON a_p.Product_Category_Id = p_c.Id;
 
+CREATE VIEW BD_2.PRODUCTS_ON_PROMOTIONS AS
 SELECT
 	Color.name,
 	Producer.name "Producer",
@@ -59,4 +60,48 @@ INNER JOIN BD_2.Product_Specimen p_s ON p.Product_Specimen_Id = p_s.Id AND a_p.I
 INNER JOIN BD_2.Producer ON a_p.Producer_Id = Producer.Id 
 INNER JOIN BD_2.Color ON p_s.Color_Id = Color.Id
 ORDER BY p.percentage DESC;
+
+CREATE VIEW BD_2.Best_Selling_Products AS
+SELECT
+	p_s.production_Date,
+	Color.name "Color",
+	Producer.name "Producer",
+	a_p.name AS "Abstract product name",
+	o_p.price_Of_One_Product,
+	SUM(o_p.quantity) sold
+FROM BD_2.Ordered_Products o_p
+INNER JOIN BD_2.Product_Specimen p_s ON p_s.Id = o_p.Product_Specimen_Id 
+INNER JOIN BD_2.Abstract_Product a_p ON p_s.Abstract_Product_Id = a_p.Id 
+INNER JOIN BD_2.Color ON p_s.Color_Id = Color.Id 
+INNER JOIN BD_2.Producer ON a_p.Producer_Id = Producer.Id 
+GROUP BY o_p.quantity, p_s.production_Date, Color.name, Producer.name, a_p.name, o_p.price_Of_One_Product
+ORDER BY o_p.quantity DESC;
+
+CREATE VIEW BD_2.finalized_Orders AS
+SELECT
+	t.transaction_Amount,
+	t.creation_Date,
+	p.firstname,
+	p.surname,
+	p.Id,
+	p.regular_Customer,
+	p.e_mail
+FROM BD_2.Transaction_t t
+INNER JOIN BD_2.Person p ON t.Customer_Id = p.Id AND t.Employee_Id = p.Id		
+WHERE p.employee_Number IS NULL;
+
+CREATE VIEW BD_2.Person_Numbers AS
+SELECT
+	Phone.phone_Number,
+	Person.firstname,
+	Person.surname,
+	Person.Id,
+	Person.regular_Customer,
+	Person.employee_Number,
+	Person.creation_Date
+FROM BD_2.Person 
+INNER JOIN BD_2.Phone ON Person.Id = Phone.Person_Id;
+
+
+
 
