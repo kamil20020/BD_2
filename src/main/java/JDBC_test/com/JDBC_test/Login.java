@@ -10,6 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 public class Login extends JPanel {
 	private JTextField loginInput;
@@ -23,7 +26,7 @@ public class Login extends JPanel {
 			
 			public void actionPerformed(ActionEvent e) {
 				
-				
+				shop.setPanel(new HomeAfterLogin(shop));
 			}
 		});
 		
@@ -31,67 +34,85 @@ public class Login extends JPanel {
 			
 			public void actionPerformed(ActionEvent e) {
 				
-				shop.setMainPanel();
+				shop.setPanel(new Home(shop));
 			}
 		});
 	}
 	
 	public Login(final Shop shop) {
 		
-		SpringLayout springLayout = new SpringLayout();
-		setLayout(springLayout);
+		setSize(452, 324);
+		
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{107, 95, 147, 107, 0};
+		gridBagLayout.rowHeights = new int[]{125, 20, 50, 45, 36, 61, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		setLayout(gridBagLayout);
 		
 		JLabel loginTitle = new JLabel("Logowanie");
-		springLayout.putConstraint(SpringLayout.NORTH, loginTitle, 25, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.WEST, loginTitle, 116, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, loginTitle, -106, SpringLayout.EAST, this);
 		loginTitle.setFont(new Font("Tahoma", Font.PLAIN, 22));
 		loginTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		add(loginTitle);
-		
-		loginInput = new JTextField();
-		springLayout.putConstraint(SpringLayout.SOUTH, loginTitle, -23, SpringLayout.NORTH, loginInput);
-		springLayout.putConstraint(SpringLayout.NORTH, loginInput, 100, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.EAST, loginInput, -56, SpringLayout.EAST, this);
-		add(loginInput);
-		loginInput.setColumns(10);
-		
-		passwordInput = new JTextField();
-		springLayout.putConstraint(SpringLayout.NORTH, passwordInput, 18, SpringLayout.SOUTH, loginInput);
-		springLayout.putConstraint(SpringLayout.EAST, passwordInput, 0, SpringLayout.EAST, loginInput);
-		add(passwordInput);
-		passwordInput.setColumns(10);
+		GridBagConstraints gbc_loginTitle = new GridBagConstraints();
+		gbc_loginTitle.fill = GridBagConstraints.VERTICAL;
+		gbc_loginTitle.insets = new Insets(0, 0, 5, 5);
+		gbc_loginTitle.gridwidth = 2;
+		gbc_loginTitle.gridx = 1;
+		gbc_loginTitle.gridy = 0;
+		add(loginTitle, gbc_loginTitle);
 		
 		JLabel loginLabel = new JLabel("Login:");
-		springLayout.putConstraint(SpringLayout.NORTH, loginLabel, 23, SpringLayout.SOUTH, loginTitle);
 		loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		springLayout.putConstraint(SpringLayout.EAST, loginLabel, -209, SpringLayout.EAST, this);
-		springLayout.putConstraint(SpringLayout.WEST, loginInput, 6, SpringLayout.EAST, loginLabel);
-		springLayout.putConstraint(SpringLayout.WEST, loginLabel, 36, SpringLayout.WEST, this);
-		add(loginLabel);
+		GridBagConstraints gbc_loginLabel = new GridBagConstraints();
+		gbc_loginLabel.anchor = GridBagConstraints.WEST;
+		gbc_loginLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_loginLabel.gridx = 1;
+		gbc_loginLabel.gridy = 1;
+		add(loginLabel, gbc_loginLabel);
+		
+		loginInput = new JTextField();
+		GridBagConstraints gbc_loginInput = new GridBagConstraints();
+		gbc_loginInput.fill = GridBagConstraints.HORIZONTAL;
+		gbc_loginInput.insets = new Insets(0, 0, 5, 5);
+		gbc_loginInput.gridx = 2;
+		gbc_loginInput.gridy = 1;
+		add(loginInput, gbc_loginInput);
+		loginInput.setColumns(10);
 		
 		JLabel passwordLabel = new JLabel("Hasło:");
-		springLayout.putConstraint(SpringLayout.SOUTH, loginLabel, -18, SpringLayout.NORTH, passwordLabel);
 		passwordLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		springLayout.putConstraint(SpringLayout.NORTH, passwordLabel, 138, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.WEST, passwordLabel, 36, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.SOUTH, passwordLabel, -142, SpringLayout.SOUTH, this);
-		springLayout.putConstraint(SpringLayout.EAST, passwordLabel, -209, SpringLayout.EAST, this);
-		springLayout.putConstraint(SpringLayout.WEST, passwordInput, 6, SpringLayout.EAST, passwordLabel);
-		add(passwordLabel);
+		GridBagConstraints gbc_passwordLabel = new GridBagConstraints();
+		gbc_passwordLabel.anchor = GridBagConstraints.WEST;
+		gbc_passwordLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_passwordLabel.gridx = 1;
+		gbc_passwordLabel.gridy = 2;
+		add(passwordLabel, gbc_passwordLabel);
 		
-		springLayout.putConstraint(SpringLayout.NORTH, acceptLoginButton, 25, SpringLayout.SOUTH, passwordInput);
-		springLayout.putConstraint(SpringLayout.WEST, acceptLoginButton, 0, SpringLayout.WEST, loginTitle);
-		springLayout.putConstraint(SpringLayout.EAST, acceptLoginButton, -106, SpringLayout.EAST, this);
+		passwordInput = new JTextField();
+		GridBagConstraints gbc_passwordInput = new GridBagConstraints();
+		gbc_passwordInput.fill = GridBagConstraints.HORIZONTAL;
+		gbc_passwordInput.insets = new Insets(0, 0, 5, 5);
+		gbc_passwordInput.gridx = 2;
+		gbc_passwordInput.gridy = 2;
+		add(passwordInput, gbc_passwordInput);
+		passwordInput.setColumns(10);
 		
-		springLayout.putConstraint(SpringLayout.NORTH, closeButton, 22, SpringLayout.SOUTH, acceptLoginButton);
-		springLayout.putConstraint(SpringLayout.WEST, closeButton, 116, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, closeButton, 0, SpringLayout.EAST, loginTitle);
+		GridBagConstraints gbc_acceptLoginButton = new GridBagConstraints();
+		gbc_acceptLoginButton.ipadx = 60;
+		gbc_acceptLoginButton.gridwidth = 2;
+		gbc_acceptLoginButton.insets = new Insets(0, 0, 5, 5);
+		gbc_acceptLoginButton.gridx = 1;
+		gbc_acceptLoginButton.gridy = 3;
+		add(acceptLoginButton, gbc_acceptLoginButton);
+		GridBagConstraints gbc_closeButton = new GridBagConstraints();
+		gbc_closeButton.insets = new Insets(0, 0, 5, 5);
+		gbc_closeButton.ipadx = 60;
+		gbc_closeButton.gridwidth = 2;
+		gbc_closeButton.gridx = 1;
+		gbc_closeButton.gridy = 4;
+		add(closeButton, gbc_closeButton);
 		
 		events(shop);
-		
-		add(acceptLoginButton);
-		add(closeButton);
 
 	}
 }

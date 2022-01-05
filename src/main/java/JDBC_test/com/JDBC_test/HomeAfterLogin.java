@@ -1,44 +1,39 @@
 package JDBC_test.com.JDBC_test;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
-import java.awt.Window;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.EventSetDescriptor;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 
-public class Home extends JPanel {
+public class HomeAfterLogin extends JPanel {
 	
-	private JButton registerButton = new JButton("Rejestracja");
-	private JButton loginButton = new JButton("Logowanie");
+	private JButton shopResourcesButton = new JButton("Zasoby sklepu");
+	private JButton updateEmployeeButton = new JButton("Aktualizacja danych pracownika");
 	private JButton closeButton = new JButton("Zamknij");
 	
 	private void events(final Shop shop) {
 		
-		loginButton.addActionListener(new ActionListener() {
+		updateEmployeeButton.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
 				
-				shop.setPanel(new Login(shop));
+				shop.setPanel(new UpdateEmployee(shop));
 			}
 		});
 		
-		registerButton.addActionListener(new ActionListener() {
+		shopResourcesButton.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
 				
-				shop.setPanel(new Register(shop));
+				shop.setPanel(new ShopResources(shop));
 			}
 		});
 		
@@ -51,7 +46,7 @@ public class Home extends JPanel {
 		});
 	}
 
-	public Home(final Shop shop) {
+	public HomeAfterLogin(final Shop shop) {
 		
 		setSize(326, 274);
 		
@@ -64,7 +59,7 @@ public class Home extends JPanel {
 		
 		events(shop);
 		
-		JLabel title = new JLabel("Sklep z elektroniką");
+		JLabel title = new JLabel("Menu");
 		
 		title.setBackground(Color.WHITE);
 		title.setHorizontalAlignment(SwingConstants.CENTER);
@@ -83,14 +78,16 @@ public class Home extends JPanel {
 		gbc_loginButton.insets = new Insets(0, 0, 5, 5);
 		gbc_loginButton.gridx = 1;
 		gbc_loginButton.gridy = 3;
-		add(loginButton, gbc_loginButton);
+		add(updateEmployeeButton, gbc_loginButton);
+		
 		GridBagConstraints gbc_registerButton = new GridBagConstraints();
 		gbc_registerButton.anchor = GridBagConstraints.NORTH;
 		gbc_registerButton.fill = GridBagConstraints.HORIZONTAL;
 		gbc_registerButton.insets = new Insets(0, 0, 5, 5);
 		gbc_registerButton.gridx = 1;
 		gbc_registerButton.gridy = 4;
-		add(registerButton, gbc_registerButton);
+		add(shopResourcesButton, gbc_registerButton);
+		
 		GridBagConstraints gbc_closeButton = new GridBagConstraints();
 		gbc_closeButton.insets = new Insets(0, 0, 0, 5);
 		gbc_closeButton.anchor = GridBagConstraints.NORTH;
@@ -99,4 +96,5 @@ public class Home extends JPanel {
 		gbc_closeButton.gridy = 5;
 		add(closeButton, gbc_closeButton);
 	}
+
 }

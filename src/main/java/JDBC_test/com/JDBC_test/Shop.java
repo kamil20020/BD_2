@@ -1,12 +1,15 @@
 package JDBC_test.com.JDBC_test;
 
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -14,11 +17,6 @@ import java.awt.Dimension;
 public class Shop extends JFrame{
 	
 	private static final long serialVersionUID = 1L;
-	
-	private Home mainPanel = new Home(this);
-	private Login loginPanel = new Login(this);
-	private JPanel registerPanel = new Register(this);
-	private JPanel catalogPanel = new Catalog(this);
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -39,28 +37,19 @@ public class Shop extends JFrame{
 		initializeMainPanel();
 	}
 	
-	private void setPanel(JPanel panel) {
+	public void setPanel(JPanel panel) {
 		
 		getContentPane().removeAll();
 		getContentPane().add(panel, BorderLayout.CENTER);
 		setSize(panel.getSize());
+		
+		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+	    int x = (int) ((dimension.getWidth() - getWidth()) / 2);
+	    int y = (int) ((dimension.getHeight() - getHeight()) / 2);
+	    setLocation(x, y);
+	    
 		revalidate();
 		repaint();
-	}
-	
-	public void setLoginPanel() {
-		
-		setPanel(loginPanel);
-	}
-	
-	public void setRegisterPanel() {
-		
-		setPanel(registerPanel);
-	}
-	
-	public void setMainPanel() {
-		
-		setPanel(mainPanel);
 	}
 	
 	public void close() {
@@ -72,12 +61,13 @@ public class Shop extends JFrame{
 	private void createFrame() {
 		
 		setResizable(false);
-		setSize(394, 328);//setPreferredSize( new Dimension(394, 328));
+		setMinimumSize(new Dimension(326, 324));
+		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	private void initializeMainPanel() {
 		
-		setMainPanel();
+		setPanel(new Home(this));
 	}
 }

@@ -1,6 +1,9 @@
 package JDBC_test.com.JDBC_test;
 
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
@@ -12,14 +15,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
-import javax.swing.text.NumberFormatter;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 
-public class Register extends JPanel implements ActionListener{
+public class UpdateEmployee extends JPanel implements ActionListener{
 	
 	private JTextField firstnameInput;
 	private JTextField surnameInput;
@@ -36,7 +34,7 @@ public class Register extends JPanel implements ActionListener{
 	private JFormattedTextField postalCode;
 	private JTextField streetNumberInput;
 	private JTextField numberOfFlatInput;
-	private JButton acceptButton = new JButton("Zarejestruj");
+	private JButton acceptButton = new JButton("Zapisz");
 	private JButton closeButton = new JButton("Zamknij");
 	
 	private String[] countries;
@@ -58,7 +56,7 @@ public class Register extends JPanel implements ActionListener{
 			
 			public void actionPerformed(ActionEvent e) {
 				
-				shop.setPanel(new Home(shop));
+				shop.setPanel(new HomeAfterLogin(shop));
 			}
 		});
 	}
@@ -71,7 +69,7 @@ public class Register extends JPanel implements ActionListener{
 		streets = new String[]{"Bzowa", "Boczna", "Bradzka",  "Czarnoleska", "Huculska", "Krucza"};
 	}
 
-	public Register(final Shop shop) {
+	public UpdateEmployee(final Shop shop) {
 		
 		setSize(813, 504);
 		
@@ -86,7 +84,7 @@ public class Register extends JPanel implements ActionListener{
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
-		JLabel title = new JLabel("Rejestracja");
+		JLabel title = new JLabel("Aktualizacja danych");
 		title.setFont(new Font("Tahoma", Font.PLAIN, 22));
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_title = new GridBagConstraints();
