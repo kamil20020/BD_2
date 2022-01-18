@@ -1,6 +1,5 @@
 package JDBC_test.com.JDBC_test;
 
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,7 +60,7 @@ public class ProductPanel extends JPanel{
 		
 		try {
 			
-			myPicture = ImageIO.read(new File("D:\\Program Files\\eclipse1\\eclipse\\workspace\\BD_2_app_try\\src\\main\\resources\\mouse.jpg"));
+			myPicture = ImageIO.read(new File("D:\\Program Files\\eclipse1\\eclipse\\workspace\\BD_2_app_try\\src\\main\\resources\\images\\mouse.jpg"));
 		}
 		catch(IOException e) {
 			

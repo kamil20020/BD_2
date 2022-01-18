@@ -6,27 +6,37 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.NumberFormat;
+import java.util.Calendar;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import JDBC_test.com.JDBC_test.models.Employee;
+import JDBC_test.com.JDBC_test.models.Store;
+import JDBC_test.com.JDBC_test.models.ValidatorType;
+import JDBC_test.com.JDBC_test.services.EmployeeService;
+
 public class UpdateEmployee extends JPanel implements ActionListener{
 	
-	private JTextField firstnameInput;
-	private JTextField surnameInput;
-	private JTextField emailInput;
-	private JTextField loginInput;
-	private JPasswordField passwordInput;
-	private JPasswordField repeatPasswordInput;
-	private JFormattedTextField employeeNumberInput;
-	private JFormattedTextField phoneNumberInput;
+	private ValidationTextField firstnameInput;
+	private ValidationTextField surnameInput;
+	private ValidationTextField emailInput;
+	private ValidationTextField loginInput;
+	private ValidationTextField passwordInput;
+	private ValidationTextField repeatPasswordInput;
+	private ValidationTextField employeeNumberInput;
+	private ValidationTextField phoneNumberInput;
 	private JButton acceptButton = new JButton("Zapisz");
 	private JButton closeButton = new JButton("Zamknij");
 	
@@ -36,6 +46,95 @@ public class UpdateEmployee extends JPanel implements ActionListener{
 			
 			public void actionPerformed(ActionEvent e) {
 				
+				Employee storeEmployee = Store.getEmployee();
+				Employee employee = new Employee(
+										storeEmployee.getId(), storeEmployee.getFirstname(), storeEmployee.getSurname(), 
+										storeEmployee.getE_mail(), storeEmployee.getUsername(), storeEmployee.getPassword(), 
+										storeEmployee.getHiring_date(), storeEmployee.getEmployee_number(), storeEmployee.getPhoneNumber());
+				
+				boolean changed = false;
+				
+				if(shouldChangeValue(firstnameInput)) {
+					
+					employee.setFirstname(firstnameInput.getText());
+					changed = true;
+				}
+				
+				if(shouldChangeValue(surnameInput)) {
+					
+					employee.setSurname(surnameInput.getText());
+					changed = true;
+				}
+				
+				if(shouldChangeValue(emailInput)) {
+					
+					employee.setE_mail(emailInput.getText());
+					changed = true;
+				}
+				
+				if(shouldChangeValue(loginInput)) {
+					
+					employee.setUsername(loginInput.getText());
+					changed = true;
+				}
+				
+				if(shouldChangeValue(passwordInput) & shouldChangeValue(repeatPasswordInput)) {
+					
+					if(new String(passwordInput.getText()).equals(new String(repeatPasswordInput.getText()))) {
+						
+						employee.setPassword(passwordInput.getText().toCharArray());
+						changed = true;
+					}
+					else {
+						
+						repeatPasswordInput.setErrorMessage("Hasła nie są identyczne");
+					}
+				}
+				
+				if(shouldChangeValue(employeeNumberInput)) {
+					
+					employee.setEmployee_number(Long.valueOf(employeeNumberInput.getText()));
+					changed = true;
+				}
+				
+				if(shouldChangeValue(phoneNumberInput)) {
+					
+					employee.setPhoneNumber(phoneNumberInput.getText());
+					changed = true;
+				}
+				
+				if(changed && !employee.equals(Store.getEmployee())) {
+					
+					try {
+						
+						Optional<Employee> employee1 = Optional.ofNullable(EmployeeService.update(employee.getId(), employee));
+						
+						if(employee1.isPresent()) {
+							
+							Store.setEmployee(EmployeeService.update(employee.getId(), employee));
+							
+							JOptionPane.showMessageDialog(shop, "Udało się zmienić dane");
+						}
+						else {
+							
+							JOptionPane.showMessageDialog(shop, "Nie udało się zmienić danych", "Błąd", JOptionPane.ERROR_MESSAGE);
+						}
+					} 
+					catch (NumberFormatException e1) {
+						e1.printStackTrace();
+						return;
+					} 
+					catch (IllegalStateException e1) {
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(shop, "Istnieje juz użytkownik o takim loginie", "Błąd", JOptionPane.ERROR_MESSAGE);
+						return;
+					} 
+					catch (SQLException e1) {
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(shop, "Wystąpił błąd podczas zmieniania danych", "Błąd", JOptionPane.ERROR_MESSAGE);
+						return;
+					} 
+				}
 				
 			}
 		});
@@ -48,183 +147,129 @@ public class UpdateEmployee extends JPanel implements ActionListener{
 			}
 		});
 	}
-
-	public UpdateEmployee(final Shop shop) {
+	
+	private void putEmployee() {
 		
-		setSize(813, 529);
+		if(Store.employee == null) {
+			
+			return;
+		}
 		
-		NumberFormat numberFormat = NumberFormat.getIntegerInstance();
+		Employee employee = Store.employee;
+		
+		this.firstnameInput.setText(employee.getFirstname());
+		this.surnameInput.setText(employee.getSurname());
+		this.emailInput.setText(employee.getE_mail());
+		this.loginInput.setText(employee.getUsername());
+		this.employeeNumberInput.setText(String.valueOf(employee.getEmployee_number()));
+		this.phoneNumberInput.setText(String.valueOf(employee.getPhoneNumber()));
+	}
+	
+	public UpdateEmployee(final Shop shop){
+		
+		setSize(622, 770);
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{147, 111, 103, 31, 120, 148, 137, 0};
-		gridBagLayout.rowHeights = new int[]{63, 30, 0, 30, 30, 30, 30, 30, 35, 30, 20, 20, 37, 33, 23, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[]{147, 103, 148, 0};
+		gridBagLayout.rowHeights = new int[]{63, 52, 40, 40, 0, 19, -12, -6, 8, 30, -1, -7, 20, 37, 33, 44, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
-		JLabel title = new JLabel("Aktualizacja danych");
+		JLabel title = new JLabel("Aktualizacja danych pracownika");
 		title.setFont(new Font("Tahoma", Font.PLAIN, 22));
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_title = new GridBagConstraints();
+		gbc_title.gridheight = 2;
 		gbc_title.fill = GridBagConstraints.VERTICAL;
-		gbc_title.insets = new Insets(0, 0, 5, 0);
-		gbc_title.gridwidth = 7;
-		gbc_title.gridx = 0;
+		gbc_title.insets = new Insets(0, 0, 5, 5);
+		gbc_title.gridx = 1;
 		gbc_title.gridy = 0;
 		add(title, gbc_title);
 		
-		JLabel firstnameLabel = new JLabel("Imię:");
-		GridBagConstraints gbc_firstnameLabel = new GridBagConstraints();
-		gbc_firstnameLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_firstnameLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_firstnameLabel.gridx = 2;
-		gbc_firstnameLabel.gridy = 2;
-		add(firstnameLabel, gbc_firstnameLabel);
-		
-		firstnameInput = new JPasswordField();
+		firstnameInput = new ValidationTextField(new JTextField(), "Imię");
 		GridBagConstraints gbc_firstnameInput = new GridBagConstraints();
-		gbc_firstnameInput.fill = GridBagConstraints.HORIZONTAL;
 		gbc_firstnameInput.insets = new Insets(0, 0, 5, 5);
-		gbc_firstnameInput.gridx = 4;
+		gbc_firstnameInput.gridx = 1;
 		gbc_firstnameInput.gridy = 2;
 		add(firstnameInput, gbc_firstnameInput);
-		firstnameInput.setColumns(10);
 		
-		JLabel surnameLabel = new JLabel("Nazwisko:");
-		GridBagConstraints gbc_surnameLabel = new GridBagConstraints();
-		gbc_surnameLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_surnameLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_surnameLabel.gridx = 2;
-		gbc_surnameLabel.gridy = 3;
-		add(surnameLabel, gbc_surnameLabel);
-		
-		surnameInput = new JPasswordField();
+		surnameInput = new ValidationTextField(new JTextField(), "Nazwisko");
 		GridBagConstraints gbc_surnameInput = new GridBagConstraints();
-		gbc_surnameInput.fill = GridBagConstraints.HORIZONTAL;
 		gbc_surnameInput.insets = new Insets(0, 0, 5, 5);
-		gbc_surnameInput.gridx = 4;
+		gbc_surnameInput.gridx = 1;
 		gbc_surnameInput.gridy = 3;
 		add(surnameInput, gbc_surnameInput);
-		surnameInput.setColumns(10);
 		
-		JLabel emailLabel = new JLabel("E-mail:");
-		GridBagConstraints gbc_emailLabel = new GridBagConstraints();
-		gbc_emailLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_emailLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_emailLabel.gridx = 2;
-		gbc_emailLabel.gridy = 4;
-		add(emailLabel, gbc_emailLabel);
-		
-		emailInput = new JPasswordField();
+		emailInput = new ValidationTextField(new JTextField(), "E-mail");
+		emailInput.setValidator(ValidatorType.E_MAIL, "Niewłaściwa wartość");
 		GridBagConstraints gbc_emailInput = new GridBagConstraints();
-		gbc_emailInput.fill = GridBagConstraints.HORIZONTAL;
 		gbc_emailInput.insets = new Insets(0, 0, 5, 5);
-		gbc_emailInput.gridx = 4;
-		gbc_emailInput.gridy = 4;
+		gbc_emailInput.gridx = 1;
+		gbc_emailInput.gridy = 5;
 		add(emailInput, gbc_emailInput);
-		emailInput.setColumns(10);
 		
-		JLabel loginLabel = new JLabel("Login:");
-		GridBagConstraints gbc_loginLabel = new GridBagConstraints();
-		gbc_loginLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_loginLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_loginLabel.gridx = 2;
-		gbc_loginLabel.gridy = 5;
-		add(loginLabel, gbc_loginLabel);
-		
-		loginInput = new JTextField();
+		loginInput = new ValidationTextField(new JTextField(), "Login");
 		GridBagConstraints gbc_loginInput = new GridBagConstraints();
-		gbc_loginInput.fill = GridBagConstraints.HORIZONTAL;
+		gbc_loginInput.anchor = GridBagConstraints.NORTH;
 		gbc_loginInput.insets = new Insets(0, 0, 5, 5);
-		gbc_loginInput.gridx = 4;
-		gbc_loginInput.gridy = 5;
+		gbc_loginInput.gridx = 1;
+		gbc_loginInput.gridy = 6;
 		add(loginInput, gbc_loginInput);
-		loginInput.setColumns(10);
 		
-		JLabel passwordLabel = new JLabel("Hasło:");
-		GridBagConstraints gbc_passwordLabel = new GridBagConstraints();
-		gbc_passwordLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_passwordLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_passwordLabel.gridx = 2;
-		gbc_passwordLabel.gridy = 6;
-		add(passwordLabel, gbc_passwordLabel);
-		
-		passwordInput = new JPasswordField();
+		passwordInput = new ValidationTextField(new JPasswordField(), "Hasło");
+		//passwordInput.setMinLength(8);
 		GridBagConstraints gbc_passwordInput = new GridBagConstraints();
-		gbc_passwordInput.fill = GridBagConstraints.HORIZONTAL;
 		gbc_passwordInput.insets = new Insets(0, 0, 5, 5);
-		gbc_passwordInput.gridx = 4;
-		gbc_passwordInput.gridy = 6;
+		gbc_passwordInput.gridx = 1;
+		gbc_passwordInput.gridy = 7;
 		add(passwordInput, gbc_passwordInput);
-		passwordInput.setColumns(10);
 		
-		JLabel repeatPasswordLabel = new JLabel("Powtórz hasło:");
-		GridBagConstraints gbc_repeatPasswordLabel = new GridBagConstraints();
-		gbc_repeatPasswordLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_repeatPasswordLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_repeatPasswordLabel.gridx = 2;
-		gbc_repeatPasswordLabel.gridy = 7;
-		add(repeatPasswordLabel, gbc_repeatPasswordLabel);
-		
-		repeatPasswordInput = new JPasswordField();
+		repeatPasswordInput = new ValidationTextField(new JPasswordField(), "Powtórz hasło");
 		GridBagConstraints gbc_repeatPasswordInput = new GridBagConstraints();
-		gbc_repeatPasswordInput.fill = GridBagConstraints.HORIZONTAL;
 		gbc_repeatPasswordInput.insets = new Insets(0, 0, 5, 5);
-		gbc_repeatPasswordInput.gridx = 4;
-		gbc_repeatPasswordInput.gridy = 7;
+		gbc_repeatPasswordInput.gridx = 1;
+		gbc_repeatPasswordInput.gridy = 8;
 		add(repeatPasswordInput, gbc_repeatPasswordInput);
-		repeatPasswordInput.setColumns(10);
-		
-		JLabel employeeNumberLabel = new JLabel("Numer pracownika:");
-		GridBagConstraints gbc_employeeNumberLabel = new GridBagConstraints();
-		gbc_employeeNumberLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_employeeNumberLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_employeeNumberLabel.gridx = 2;
-		gbc_employeeNumberLabel.gridy = 9;
-		add(employeeNumberLabel, gbc_employeeNumberLabel);
-		
-		employeeNumberInput = new JFormattedTextField(numberFormat);
+		   
+		employeeNumberInput = new ValidationTextField(new JTextField(), "Numer pracownika");
+		employeeNumberInput.setValidator(ValidatorType.NUMBER, "Należy wprowadzić cyfry");
 		GridBagConstraints gbc_employeeNumberInput = new GridBagConstraints();
-		gbc_employeeNumberInput.fill = GridBagConstraints.HORIZONTAL;
 		gbc_employeeNumberInput.insets = new Insets(0, 0, 5, 5);
-		gbc_employeeNumberInput.gridx = 4;
-		gbc_employeeNumberInput.gridy = 9;
+		gbc_employeeNumberInput.gridx = 1;
+		gbc_employeeNumberInput.gridy = 10;
 		add(employeeNumberInput, gbc_employeeNumberInput);
-		employeeNumberInput.setColumns(10);
-		
-		JLabel phoneNumberLabel = new JLabel("Numer telefonu służbowego:");
-		GridBagConstraints gbc_phoneNumberLabel = new GridBagConstraints();
-		gbc_phoneNumberLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_phoneNumberLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_phoneNumberLabel.gridx = 2;
-		gbc_phoneNumberLabel.gridy = 10;
-		add(phoneNumberLabel, gbc_phoneNumberLabel);
-		
-		phoneNumberInput = new JFormattedTextField(numberFormat);
+		 
+		phoneNumberInput = new ValidationTextField(new JTextField(), "Numer telefonu służbowego");
+		phoneNumberInput.setValidator(ValidatorType.NUMBER, "Należy wprowadzić cyfry");
 		GridBagConstraints gbc_phoneNumberInput = new GridBagConstraints();
-		gbc_phoneNumberInput.fill = GridBagConstraints.HORIZONTAL;
 		gbc_phoneNumberInput.insets = new Insets(0, 0, 5, 5);
-		gbc_phoneNumberInput.gridx = 4;
-		gbc_phoneNumberInput.gridy = 10;
+		gbc_phoneNumberInput.gridx = 1;
+		gbc_phoneNumberInput.gridy = 11;
 		add(phoneNumberInput, gbc_phoneNumberInput);
-		phoneNumberInput.setColumns(10);
 		
 		GridBagConstraints gbc_acceptButton = new GridBagConstraints();
 		gbc_acceptButton.fill = GridBagConstraints.HORIZONTAL;
 		gbc_acceptButton.insets = new Insets(0, 0, 5, 5);
-		gbc_acceptButton.gridwidth = 3;
-		gbc_acceptButton.gridx = 2;
-		gbc_acceptButton.gridy = 12;
+		gbc_acceptButton.gridx = 1;
+		gbc_acceptButton.gridy = 13;
 		add(acceptButton, gbc_acceptButton);
+		
 		GridBagConstraints gbc_closeButton = new GridBagConstraints();
 		gbc_closeButton.fill = GridBagConstraints.HORIZONTAL;
 		gbc_closeButton.insets = new Insets(0, 0, 5, 5);
-		gbc_closeButton.gridwidth = 3;
-		gbc_closeButton.gridx = 2;
-		gbc_closeButton.gridy = 13;
+		gbc_closeButton.gridx = 1;
+		gbc_closeButton.gridy = 14;
 		add(closeButton, gbc_closeButton);
 		
+		putEmployee();
+		
 		events(shop);
+	}
+	
+	private boolean shouldChangeValue(ValidationTextField textField) {
+		
+		return !textField.getText().isEmpty() && textField.validateInput();
 	}
 
 	@Override

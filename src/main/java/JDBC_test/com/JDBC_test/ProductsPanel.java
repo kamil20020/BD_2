@@ -1,10 +1,8 @@
 package JDBC_test.com.JDBC_test;
 
 import java.awt.GridLayout;
-import java.awt.List;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import JDBC_test.com.JDBC_test.models.Product;

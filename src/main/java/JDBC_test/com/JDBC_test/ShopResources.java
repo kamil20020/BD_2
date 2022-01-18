@@ -5,21 +5,22 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.JComboBox;
 
 import JDBC_test.com.JDBC_test.models.Product;
+import JDBC_test.com.JDBC_test.services.ProductCategoryService;
 
 public class ShopResources extends JPanel{
 	
@@ -27,10 +28,9 @@ public class ShopResources extends JPanel{
 	private JButton searchButton = new JButton("Wyszukaj");
 	private JButton closeButton = new JButton("Zamknij");
 	private JScrollPane products;
-	private JComboBox productCategories;
+	private JComboBox<String> productCategories;
 	
 	private Product[] productsData;
-	private String[] productsNames;
 	private String[] productCategoriesData;
 	
 	private void events(final Shop shop) {
@@ -57,7 +57,23 @@ public class ShopResources extends JPanel{
 	
 	private void initProductCategories() {
 		
-		productCategoriesData = new String[] {"peryferia", "komputery", "karty graficzne"};
+		ArrayList<String> returnedProductCategories;
+		
+		try {
+			returnedProductCategories = ProductCategoryService.getAll();
+		} 
+		catch (SQLException e2) {
+
+			e2.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Nie udało się wczytać kategorii produktów", "Błąd", JOptionPane.ERROR_MESSAGE);
+			
+			return;
+		}
+		
+		productCategoriesData = new String[returnedProductCategories.size()];
+		
+		productCategoriesData = returnedProductCategories.toArray(productCategoriesData);
+
 	}
 
 	public ShopResources(final Shop shop) {
@@ -89,7 +105,7 @@ public class ShopResources extends JPanel{
 		gbc_title.gridy = 0;
 		add(title, gbc_title);
 		
-		productCategories = new JComboBox(productCategoriesData);
+		productCategories = new JComboBox<>(productCategoriesData);
 		GridBagConstraints gbc_productCategories = new GridBagConstraints();
 		gbc_productCategories.insets = new Insets(0, 0, 5, 5);
 		gbc_productCategories.fill = GridBagConstraints.HORIZONTAL;

@@ -1,13 +1,25 @@
 package JDBC_test.com.JDBC_test;
 
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.SpringLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import JDBC_test.com.JDBC_test.models.Employee;
+import JDBC_test.com.JDBC_test.models.Person;
+import JDBC_test.com.JDBC_test.models.Store;
+import JDBC_test.com.JDBC_test.services.EmployeeService;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import java.awt.GridBagLayout;
@@ -15,8 +27,9 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 public class Login extends JPanel {
-	private JTextField loginInput;
-	private JTextField passwordInput;
+	
+	private ValidationTextField loginInput;
+	private ValidationTextField passwordInput;
 	private JButton acceptLoginButton = new JButton("Zaloguj");
 	private JButton closeButton = new JButton("Zamknij");
 
@@ -26,7 +39,33 @@ public class Login extends JPanel {
 			
 			public void actionPerformed(ActionEvent e) {
 				
-				shop.setPanel(new HomeAfterLogin(shop));
+				if(loginInput.validateInput() & passwordInput.validateInput()) {
+					
+					try {
+						Optional<Employee> employee = Optional.ofNullable(
+								EmployeeService.login(loginInput.getText(), Person.convertPassword(passwordInput.getText())));
+						
+						if(employee.isPresent()) {
+							
+							Store.setEmployee(employee.get());
+						}
+						else {
+							
+							JOptionPane.showMessageDialog(shop, "Podany login i/lub hasło są nieprawidłowe", "Błędne dane", JOptionPane.INFORMATION_MESSAGE);
+							return;
+						}
+						
+					}  
+					catch (SQLException e1) {
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(shop, "Wystąpił błąd podczas logowania", "Błąd", JOptionPane.ERROR_MESSAGE);
+						return;
+					} 
+					
+					JOptionPane.showMessageDialog(shop, "Udało się zalogować");
+					
+					shop.setPanel(new HomeAfterLogin(shop));
+				}
 			}
 		});
 		
@@ -41,12 +80,12 @@ public class Login extends JPanel {
 	
 	public Login(final Shop shop) {
 		
-		setSize(452, 324);
+		setSize(524, 441);
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{107, 95, 147, 107, 0};
-		gridBagLayout.rowHeights = new int[]{125, 20, 50, 45, 36, 61, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[]{118, 95, 107, 0};
+		gridBagLayout.rowHeights = new int[]{175, 30, 79, 45, 36, 61, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
@@ -56,58 +95,37 @@ public class Login extends JPanel {
 		GridBagConstraints gbc_loginTitle = new GridBagConstraints();
 		gbc_loginTitle.fill = GridBagConstraints.VERTICAL;
 		gbc_loginTitle.insets = new Insets(0, 0, 5, 5);
-		gbc_loginTitle.gridwidth = 2;
 		gbc_loginTitle.gridx = 1;
 		gbc_loginTitle.gridy = 0;
 		add(loginTitle, gbc_loginTitle);
 		
-		JLabel loginLabel = new JLabel("Login:");
-		loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		GridBagConstraints gbc_loginLabel = new GridBagConstraints();
-		gbc_loginLabel.anchor = GridBagConstraints.WEST;
-		gbc_loginLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_loginLabel.gridx = 1;
-		gbc_loginLabel.gridy = 1;
-		add(loginLabel, gbc_loginLabel);
-		
-		loginInput = new JTextField();
+		loginInput = new ValidationTextField(new JTextField(), "Login");
 		GridBagConstraints gbc_loginInput = new GridBagConstraints();
 		gbc_loginInput.fill = GridBagConstraints.HORIZONTAL;
 		gbc_loginInput.insets = new Insets(0, 0, 5, 5);
-		gbc_loginInput.gridx = 2;
+		gbc_loginInput.gridx = 1;
 		gbc_loginInput.gridy = 1;
 		add(loginInput, gbc_loginInput);
-		loginInput.setColumns(10);
 		
-		JLabel passwordLabel = new JLabel("Hasło:");
-		passwordLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		GridBagConstraints gbc_passwordLabel = new GridBagConstraints();
-		gbc_passwordLabel.anchor = GridBagConstraints.WEST;
-		gbc_passwordLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_passwordLabel.gridx = 1;
-		gbc_passwordLabel.gridy = 2;
-		add(passwordLabel, gbc_passwordLabel);
-		
-		passwordInput = new JTextField();
+		passwordInput = new ValidationTextField(new JPasswordField(), "Hasło");
 		GridBagConstraints gbc_passwordInput = new GridBagConstraints();
 		gbc_passwordInput.fill = GridBagConstraints.HORIZONTAL;
 		gbc_passwordInput.insets = new Insets(0, 0, 5, 5);
-		gbc_passwordInput.gridx = 2;
+		gbc_passwordInput.gridx = 1;
 		gbc_passwordInput.gridy = 2;
 		add(passwordInput, gbc_passwordInput);
-		passwordInput.setColumns(10);
 		
 		GridBagConstraints gbc_acceptLoginButton = new GridBagConstraints();
+		gbc_acceptLoginButton.fill = GridBagConstraints.HORIZONTAL;
 		gbc_acceptLoginButton.ipadx = 60;
-		gbc_acceptLoginButton.gridwidth = 2;
 		gbc_acceptLoginButton.insets = new Insets(0, 0, 5, 5);
 		gbc_acceptLoginButton.gridx = 1;
 		gbc_acceptLoginButton.gridy = 3;
 		add(acceptLoginButton, gbc_acceptLoginButton);
 		GridBagConstraints gbc_closeButton = new GridBagConstraints();
+		gbc_closeButton.fill = GridBagConstraints.HORIZONTAL;
 		gbc_closeButton.insets = new Insets(0, 0, 5, 5);
 		gbc_closeButton.ipadx = 60;
-		gbc_closeButton.gridwidth = 2;
 		gbc_closeButton.gridx = 1;
 		gbc_closeButton.gridy = 4;
 		add(closeButton, gbc_closeButton);

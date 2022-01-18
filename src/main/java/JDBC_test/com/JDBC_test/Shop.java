@@ -10,6 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import JDBC_test.com.JDBC_test.models.DBUserType;
+import JDBC_test.com.JDBC_test.services.DatabaseConnection;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -17,6 +20,8 @@ import java.awt.Dimension;
 public class Shop extends JFrame{
 	
 	private static final long serialVersionUID = 1L;
+	
+	private DatabaseConnection connection = new DatabaseConnection(DBUserType.EMPLOYEE);
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -63,11 +68,14 @@ public class Shop extends JFrame{
 		setResizable(false);
 		setMinimumSize(new Dimension(326, 324));
 		setLocationRelativeTo(null);
+		setFocusable(true);
+		requestFocusInWindow();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	private void initializeMainPanel() {
 		
-		setPanel(new Home(this));
+		//setPanel(new Home(this));
+		setPanel(new ShopResources(this));
 	}
 }

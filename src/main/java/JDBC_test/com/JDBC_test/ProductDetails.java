@@ -1,7 +1,9 @@
 package JDBC_test.com.JDBC_test;
 
+import java.awt.Font;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -16,9 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import JDBC_test.com.JDBC_test.models.Product;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Font;
 
 public class ProductDetails extends JPanel{
 
@@ -46,7 +45,7 @@ public class ProductDetails extends JPanel{
 		
 		try {
 			
-			myPicture = ImageIO.read(new File("D:\\Program Files\\eclipse1\\eclipse\\workspace\\BD_2_app_try\\src\\main\\resources\\mouse.jpg"));
+			myPicture = ImageIO.read(new File("D:\\Program Files\\eclipse1\\eclipse\\workspace\\BD_2_app_try\\src\\main\\resources\\images\\mouse.jpg"));
 			
 			return myPicture;
 		}
