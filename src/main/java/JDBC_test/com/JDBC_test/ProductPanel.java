@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -16,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import JDBC_test.com.JDBC_test.DAOS.AbstractProductDAO;
+import JDBC_test.com.JDBC_test.models.AbstractProduct;
 import JDBC_test.com.JDBC_test.models.Product;
 
 public class ProductPanel extends JPanel{
@@ -26,9 +29,11 @@ public class ProductPanel extends JPanel{
 	private JLabel nameLabel;
 	private JLabel priceLabel;
 	
-	public Product product;
+	public AbstractProduct product;
 	
-	private void events(final Shop shop) {
+	private Long index;
+	
+	private void events(final Shop shop, final ProductsPanel productsPanel) {
 		
 		imageLabel.addMouseListener(new MouseAdapter() {
 			
@@ -36,6 +41,22 @@ public class ProductPanel extends JPanel{
 			public void mouseClicked(MouseEvent e) {
 				
 				shop.setPanel(new ProductDetails(shop, product));
+			}
+		});
+		
+		final ProductPanel panel = this;
+		
+		removeButton.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				try {
+					AbstractProductDAO.deleteById(product.getId());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				productsPanel.deleteProduct(shop, panel);
 			}
 		});
 		
@@ -48,7 +69,9 @@ public class ProductPanel extends JPanel{
 		});
 	}
 
-	public ProductPanel(final Shop shop, Product product) {
+	public ProductPanel(final Shop shop, final ProductsPanel productsPanel, AbstractProduct product, Long index) {
+		
+		this.index = index;
 		
 		GridLayout gridLayout = new GridLayout(1, 4);
 		
@@ -56,25 +79,14 @@ public class ProductPanel extends JPanel{
 		
 		this.product = product;
 		
-		BufferedImage myPicture = null;
+		imageLabel = new JLabel(new ImageIcon(product.getImage()));
 		
-		try {
-			
-			myPicture = ImageIO.read(new File("D:\\Program Files\\eclipse1\\eclipse\\workspace\\BD_2_app_try\\src\\main\\resources\\images\\mouse.jpg"));
-		}
-		catch(IOException e) {
-			
-			System.out.println("Nie udalo sie wczytac obrazka produktu");
-		}
-		
-		imageLabel = new JLabel(new ImageIcon(myPicture));
-		
-		events(shop);
+		events(shop, productsPanel);
 		
 		nameLabel = new JLabel(product.getName());
 		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		priceLabel = new JLabel(Double.toString(product.getValue()));
+		priceLabel = new JLabel(Double.toString(product.getPrice()));
 		priceLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		editButton.setSize(50, 40);

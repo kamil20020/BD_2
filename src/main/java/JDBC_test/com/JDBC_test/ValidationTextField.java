@@ -214,4 +214,10 @@ public class ValidationTextField extends JPanel{
 		this.formatMessage = errorMessage;
 		this.validatorType = validatorType;
 	}
+	
+	public void setValidator(ValidatorType validatorType) {
+		
+		this.formatMessage = "Wprowadzono niepoprawną wartość";
+		this.validatorType = validatorType;
+	}
 }

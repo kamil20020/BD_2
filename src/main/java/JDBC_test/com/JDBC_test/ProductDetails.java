@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import JDBC_test.com.JDBC_test.models.AbstractProduct;
 import JDBC_test.com.JDBC_test.models.Product;
 
 public class ProductDetails extends JPanel{
@@ -57,7 +58,7 @@ public class ProductDetails extends JPanel{
 		return null;
 	}
 
-	public ProductDetails(final Shop shop, Product product) {
+	public ProductDetails(final Shop shop, AbstractProduct product) {
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{70, 81, 89, 78, 70, 0};
@@ -96,7 +97,7 @@ public class ProductDetails extends JPanel{
 		gbc_nameLabel.gridy = 1;
 		add(nameLabel, gbc_nameLabel);
 		
-		priceLabel = new JLabel(Double.toString(product.getValue()) + " zł");
+		priceLabel = new JLabel(Double.toString(product.getPrice()) + " zł");
 		priceLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		GridBagConstraints gbc_priceLabel = new GridBagConstraints();
 		gbc_priceLabel.fill = GridBagConstraints.HORIZONTAL;

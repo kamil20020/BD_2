@@ -1,12 +1,10 @@
 package JDBC_test.com.JDBC_test.DAOS;
 
-import java.awt.List;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,9 +17,10 @@ public class UsersInfoFileDAO {
 		
 		Map <DBUserType, DBUser> users = new HashMap<>();
 		
-		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		InputStream inputStream = classloader.getResourceAsStream("users.txt");
-		InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		InputStream file = classLoader.getResourceAsStream("Users.txt");
+				
+		InputStreamReader streamReader = new InputStreamReader(file, StandardCharsets.UTF_8);
 		BufferedReader reader = new BufferedReader(streamReader);
 		
 		try {

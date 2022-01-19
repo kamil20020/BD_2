@@ -42,6 +42,12 @@ public class Shop extends JFrame{
 		initializeMainPanel();
 	}
 	
+	public void update() {
+		
+		revalidate();
+		repaint();
+	}
+	
 	public void setPanel(JPanel panel) {
 		
 		getContentPane().removeAll();
@@ -75,7 +81,7 @@ public class Shop extends JFrame{
 	
 	private void initializeMainPanel() {
 		
-		//setPanel(new Home(this));
-		setPanel(new ShopResources(this));
+		setPanel(new Home(this));
+		//setPanel(new ShopResources(this));
 	}
 }

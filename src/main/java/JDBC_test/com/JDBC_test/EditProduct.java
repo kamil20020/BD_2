@@ -22,6 +22,7 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
+import JDBC_test.com.JDBC_test.models.AbstractProduct;
 import JDBC_test.com.JDBC_test.models.Product;
 
 public class EditProduct extends JPanel{
@@ -104,7 +105,7 @@ public class EditProduct extends JPanel{
 		}
 	}
 
-	public EditProduct(final Shop shop, Product product) {
+	public EditProduct(final Shop shop, AbstractProduct product) {
 		
 		setSize(389, 420);
 		
