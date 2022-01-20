@@ -1,5 +1,9 @@
 package JDBC_test.com.JDBC_test.DAOS;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,6 +63,19 @@ public class AbstractProductDAO {
 		ResultSet results = statement.executeQuery();
 
 		ArrayList<AbstractProduct> products = getFromResults(results);
+		
+		for(AbstractProduct p : products) {
+			
+			PrintWriter writer = null;
+			try {
+				writer = new PrintWriter("the-file-name.txt", "UTF-8");
+			} catch (FileNotFoundException | UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			writer.println(p.getImage());
+			writer.close();
+		}
 		
 		results.close();
 		statement.close();

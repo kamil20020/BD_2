@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -64,17 +65,21 @@ public class ShopResources extends JPanel{
 	private void initProducts() {
 		
 		try {
-			abstractProducts = AbstractProductDAO.getAll();
+			abstractProducts = AbstractProductService.maybyeNewlyCreatedDatabaseGetAll();
 			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} 
+		catch (SQLException e) {
+			
+			e.printStackTrace();
+		} 
+		catch (IOException e) {
+
 			e.printStackTrace();
 		}
 	}
 	
 	public void addAbstractProduct(Shop shop, AbstractProduct product) {
 		
-		//abstractProducts.add(product);
 		productsPanel.addProduct(shop, product);
 	}
 	

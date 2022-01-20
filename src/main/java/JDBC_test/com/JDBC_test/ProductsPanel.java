@@ -24,6 +24,8 @@ public class ProductsPanel extends JPanel{
 			JPanel productPanel = new ProductPanel(shop, this, productsData.get(i), new Long(i));
 			
 			add(productPanel);
+			
+			products.add(productPanel);
 		}
 	}
 	

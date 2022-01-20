@@ -34,7 +34,7 @@ public class EditProduct extends JPanel{
 	private JTextField nameInput;
 	private JTextField priceInput;
 	
-	public Product product;
+	public AbstractProduct product;
 	
 	private void events(final Shop shop) {
 		
@@ -53,24 +53,6 @@ public class EditProduct extends JPanel{
 				shop.setPanel(new ShopResources(shop));
 			}
 		});
-	}
-	
-	private BufferedImage initImage() {
-		
-		BufferedImage myPicture;
-		
-		try {
-			
-			myPicture = ImageIO.read(new File("D:\\Program Files\\eclipse1\\eclipse\\workspace\\BD_2_app_try\\src\\main\\resources\\mouse.jpg"));
-			
-			return myPicture;
-		}
-		catch(IOException e) {
-			
-			System.out.println("Nie udalo sie wczytac obrazka produktu");
-		}
-		
-		return null;
 	}
 	
 	private void choseImage() {
@@ -104,10 +86,28 @@ public class EditProduct extends JPanel{
 			}
 		}
 	}
+	
+	private void loadImage() {
+		
+		if(product.getImage() == null) {
+			
+			imageLabel = new JLabel("Brak obrazka"); 
+			return;
+		}
+		
+		ImageIcon icon = new ImageIcon(product.getImage());
+		
+		imageLabel = new JLabel(icon);
+	}
 
 	public EditProduct(final Shop shop, AbstractProduct product) {
 		
 		setSize(389, 420);
+		
+		this.product = product;
+		
+		events(shop);
+		loadImage();
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{70, 81, 89, 78, 70, 0};
@@ -116,12 +116,8 @@ public class EditProduct extends JPanel{
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
-		events(shop);
-		
 		JLabel title = new JLabel("Zmiana danych produktu");
 		title.setFont(new Font("Tahoma", Font.PLAIN, 22));
-		
-		initImage();
 		
 		GridBagConstraints gbc_title = new GridBagConstraints();
 		gbc_title.fill = GridBagConstraints.VERTICAL;
@@ -164,8 +160,7 @@ public class EditProduct extends JPanel{
 		gbc_priceInput.gridx = 2;
 		gbc_priceInput.gridy = 3;
 		add(priceInput, gbc_priceInput);
-		
-		imageLabel = new JLabel(new ImageIcon(initImage()));
+	
 		GridBagConstraints gbc_imageLabel = new GridBagConstraints();
 		gbc_imageLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_imageLabel.gridx = 2;
