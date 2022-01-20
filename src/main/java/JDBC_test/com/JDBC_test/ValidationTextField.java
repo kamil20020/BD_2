@@ -126,7 +126,7 @@ public class ValidationTextField extends JPanel{
 	
 	public void setRequired(boolean required) {
 		
-		this.required = true;
+		this.required = required;
 	}
 	
 	public void setMinLength(int length) {
@@ -189,6 +189,17 @@ public class ValidationTextField extends JPanel{
 					
 					return false;
 				}
+				
+			case DOUBLE:
+				
+				try {
+					Double.valueOf(textField.getText());
+					return true;
+				}
+				catch(NumberFormatException e) {
+					
+					return false;
+				}
 		}
 		
 		return true;
@@ -217,7 +228,7 @@ public class ValidationTextField extends JPanel{
 	
 	public void setValidator(ValidatorType validatorType) {
 		
-		this.formatMessage = "Wprowadzono niepoprawną wartość";
+		this.formatMessage = "Należy wprowadzić cyfry";
 		this.validatorType = validatorType;
 	}
 }

@@ -23,6 +23,16 @@ public class ProductCategoryDAO {
 		return productCategories;
 	}
 
+	private static String getOneFromResults(ResultSet results) throws SQLException {
+		
+		if(!results.next()) {
+			
+			return null;
+		}
+		
+		return results.getString(1);
+	}
+	
 	private static ArrayList<String> getFromResults(ResultSet results) throws SQLException {
 		
 		ArrayList<String> productCategories = new ArrayList<>();
@@ -33,5 +43,21 @@ public class ProductCategoryDAO {
 		}
 		
 		return productCategories;
+	}
+	
+	public static String getById(Long id) throws SQLException {
+		
+		PreparedStatement statement = ConnectionDAO.connection.prepareStatement("SELECT NAME FROM BD_2.PRODUCT_CATEGORY WHERE ID=?");
+		
+		statement.setLong(1, id);
+		
+		ResultSet results = statement.executeQuery();
+
+		String productCategory = getOneFromResults(results);
+		
+		results.close();
+		statement.close();
+		
+		return productCategory;
 	}
 }

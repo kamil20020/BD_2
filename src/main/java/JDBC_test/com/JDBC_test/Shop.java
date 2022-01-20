@@ -81,7 +81,7 @@ public class Shop extends JFrame{
 	
 	private void initializeMainPanel() {
 		
-		//setPanel(new Home(this));
-		setPanel(new ShopResources(this));
+		setPanel(new Home(this));
+		//setPanel(new ShopResources(this));
 	}
 }

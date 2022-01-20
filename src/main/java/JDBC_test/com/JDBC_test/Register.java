@@ -149,21 +149,21 @@ public class Register extends JPanel implements ActionListener{
 		gbc_title.gridy = 0;
 		add(title, gbc_title);
 		
-		firstnameInput = new ValidationTextField(new JTextField(), "Imię");
+		firstnameInput = new ValidationTextField(new JTextField(), "Imię*");
 		GridBagConstraints gbc_firstnameInput = new GridBagConstraints();
 		gbc_firstnameInput.insets = new Insets(0, 0, 5, 5);
 		gbc_firstnameInput.gridx = 1;
 		gbc_firstnameInput.gridy = 2;
 		add(firstnameInput, gbc_firstnameInput);
 		
-		surnameInput = new ValidationTextField(new JTextField(), "Nazwisko");
+		surnameInput = new ValidationTextField(new JTextField(), "Nazwisko*");
 		GridBagConstraints gbc_surnameInput = new GridBagConstraints();
 		gbc_surnameInput.insets = new Insets(0, 0, 5, 5);
 		gbc_surnameInput.gridx = 1;
 		gbc_surnameInput.gridy = 3;
 		add(surnameInput, gbc_surnameInput);
 		
-		emailInput = new ValidationTextField(new JTextField(), "E-mail");
+		emailInput = new ValidationTextField(new JTextField(), "E-mail*");
 		emailInput.setValidator(ValidatorType.E_MAIL, "Niewłaściwa wartość");
 		GridBagConstraints gbc_emailInput = new GridBagConstraints();
 		gbc_emailInput.insets = new Insets(0, 0, 5, 5);
@@ -171,7 +171,7 @@ public class Register extends JPanel implements ActionListener{
 		gbc_emailInput.gridy = 5;
 		add(emailInput, gbc_emailInput);
 		
-		loginInput = new ValidationTextField(new JTextField(), "Login");
+		loginInput = new ValidationTextField(new JTextField(), "Login*");
 		GridBagConstraints gbc_loginInput = new GridBagConstraints();
 		gbc_loginInput.anchor = GridBagConstraints.NORTH;
 		gbc_loginInput.insets = new Insets(0, 0, 5, 5);
@@ -179,24 +179,24 @@ public class Register extends JPanel implements ActionListener{
 		gbc_loginInput.gridy = 6;
 		add(loginInput, gbc_loginInput);
 		
-		passwordInput = new ValidationTextField(new JPasswordField(), "Hasło");
+		passwordInput = new ValidationTextField(new JPasswordField(), "Hasło*");
 		GridBagConstraints gbc_passwordInput = new GridBagConstraints();
 		gbc_passwordInput.insets = new Insets(0, 0, 5, 5);
 		gbc_passwordInput.gridx = 1;
 		gbc_passwordInput.gridy = 7;
 		add(passwordInput, gbc_passwordInput);
 		
-		repeatPasswordInput = new ValidationTextField(new JPasswordField(), "Powtórz hasło");
+		repeatPasswordInput = new ValidationTextField(new JPasswordField(), "Powtórz hasło*");
 		GridBagConstraints gbc_repeatPasswordInput = new GridBagConstraints();
 		gbc_repeatPasswordInput.insets = new Insets(0, 0, 5, 5);
 		gbc_repeatPasswordInput.gridx = 1;
 		gbc_repeatPasswordInput.gridy = 8;
 		add(repeatPasswordInput, gbc_repeatPasswordInput);
 		
-		phoneNumberInput = new ValidationTextField(new JTextField(), "Numer telefonu służbowego");
+		phoneNumberInput = new ValidationTextField(new JTextField(), "Numer telefonu służbowego*");
 		phoneNumberInput.setValidator(ValidatorType.NUMBER, "Należy wprowadzić cyfry");
 		
-		employeeNumberInput = new ValidationTextField(new JTextField(), "Numer pracownika");
+		employeeNumberInput = new ValidationTextField(new JTextField(), "Numer pracownika*");
 		employeeNumberInput.setValidator(ValidatorType.NUMBER, "Należy wprowadzić cyfry");
 		
 		hiringDate = new JDateChooser();

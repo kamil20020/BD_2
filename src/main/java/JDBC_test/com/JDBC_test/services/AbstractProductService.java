@@ -3,6 +3,7 @@ package JDBC_test.com.JDBC_test.services;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import JDBC_test.com.JDBC_test.DAOS.AbstractProductDAO;
 import JDBC_test.com.JDBC_test.DAOS.EmployeeDAO;
@@ -55,6 +56,14 @@ public class AbstractProductService {
 				
 				filePath = "images/karta graficzna.jpg";
 			}
+			else if(upperName.contains("1")) {
+				
+				filePath = "images/tablet1.jpg";
+			}
+			else if(upperName.contains("KOMPUTER")) {
+				
+				filePath = "images/computer.jpg";
+			}
 			
 			if(filePath != null) {
 				
@@ -80,8 +89,27 @@ public class AbstractProductService {
 		if(!withImage) {
 			
 			loadDefaultImages(products);
+			
+			for(AbstractProduct p : products) {
+				
+				AbstractProductDAO.updateImageById(p.getId(), p.getImage());
+			}
 		}
 		
 		return products;
+	}
+	
+	public static AbstractProduct update(Long id, AbstractProduct product) throws SQLException {
+		
+		Optional<AbstractProduct> foundProduct =  Optional.ofNullable(AbstractProductDAO.getById(id));
+		
+		if(foundProduct.isPresent()) {
+			
+			AbstractProductDAO.updateById(id, product);
+			
+			return AbstractProductDAO.getById(id);
+		}
+		
+		return null;
 	}
 }

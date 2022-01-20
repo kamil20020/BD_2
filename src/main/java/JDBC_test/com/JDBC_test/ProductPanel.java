@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -53,14 +54,19 @@ public class ProductPanel extends JPanel{
 			
 			public void actionPerformed(ActionEvent e) {
 				
-				try {
-					AbstractProductDAO.deleteById(product.getId());
-				} 
-				catch (SQLException e1) {
+				int check = JOptionPane.showConfirmDialog(shop, "Czy napewno ten produkt ma zostać usunięty?");  
+				
+				if(check ==JOptionPane.YES_OPTION){  
+					
+					try {
+						AbstractProductDAO.deleteById(product.getId());
+					} 
+					catch (SQLException e1) {
 
-					e1.printStackTrace();
-				}
-				productsPanel.deleteProduct(shop, panel);
+						e1.printStackTrace();
+					}
+					productsPanel.deleteProduct(shop, panel); 
+				}  
 			}
 		});
 		

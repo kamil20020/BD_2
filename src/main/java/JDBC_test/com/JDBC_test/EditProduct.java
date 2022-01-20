@@ -1,5 +1,6 @@
 package JDBC_test.com.JDBC_test;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -10,12 +11,17 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -24,17 +30,34 @@ import javax.swing.filechooser.FileSystemView;
 
 import JDBC_test.com.JDBC_test.models.AbstractProduct;
 import JDBC_test.com.JDBC_test.models.Product;
+import JDBC_test.com.JDBC_test.models.Store;
+import JDBC_test.com.JDBC_test.models.ValidatorType;
+import JDBC_test.com.JDBC_test.services.AbstractProductService;
+import JDBC_test.com.JDBC_test.services.ImageService;
+import JDBC_test.com.JDBC_test.services.ProducerService;
+import JDBC_test.com.JDBC_test.services.ProductCategoryService;
 
 public class EditProduct extends JPanel{
 
+	private JComboBox productCategories;
+	private JComboBox producers;
+	private JLabel imageLabel;
+	private JButton imageInput = new JButton("Wybierz obraz");
+	private ValidationTextField nameInput;
+	private ValidationTextField priceInput;
+	private ValidationTextField descriptionInput;
+	private ValidationTextField weightInput;
+	private ValidationTextField heightInput;
+	private ValidationTextField widthInput;
+	private ValidationTextField taxValueInput;
+	
 	private JButton saveButton = new JButton("Zapisz");
 	private JButton closeButton = new JButton("Zamknij");
-	private JButton imageInput = new JButton("Wybierz obraz");
-	private JLabel imageLabel;
-	private JTextField nameInput;
-	private JTextField priceInput;
 	
-	public AbstractProduct product;
+	private String[] productCategoriesData;
+	private String[] producersData;
+	
+	private AbstractProduct product;
 	
 	private void events(final Shop shop) {
 		
@@ -43,6 +66,43 @@ public class EditProduct extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				
 				choseImage();
+			}
+		});
+		
+		saveButton.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				boolean requiredFields = (nameInput.validateInput() & priceInput.validateInput() & descriptionInput.validateInput()
+						& weightInput.validateInput() & heightInput.validateInput() & widthInput.validateInput()
+						& taxValueInput.validateInput());
+				
+				if(requiredFields) {
+					
+					try {
+						Optional<AbstractProduct> product1 = Optional.ofNullable(AbstractProductService.update(product.getId(), (new AbstractProduct(
+								new Long(productCategories.getSelectedIndex()+1), new Long(producers.getSelectedIndex()+1), ImageService.getBytes(imageLabel),
+								Double.valueOf(priceInput.getText()), nameInput.getText(), descriptionInput.getText(), 
+								Double.valueOf(weightInput.getText()), Double.valueOf(heightInput.getText()), Double.valueOf(widthInput.getText()),
+								Float.valueOf(taxValueInput.getText())))));
+						
+					} 
+					catch (NumberFormatException e1) {
+						e1.printStackTrace();
+					} 
+					catch (IllegalStateException e1) {
+						e1.printStackTrace();
+					} 
+					catch (SQLException e1) {
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(shop, "Wystąpił błąd aktualizowania produktu", "Błąd", JOptionPane.ERROR_MESSAGE);
+						return;
+					} 
+					
+					JOptionPane.showMessageDialog(shop, "Udało się zaktualizować produkt");
+					
+					shop.setPanel(new ShopResources(shop));
+				}
 			}
 		});
 		
@@ -99,95 +159,204 @@ public class EditProduct extends JPanel{
 		
 		imageLabel = new JLabel(icon);
 	}
+	
+	private void initProductCategories() {
+		
+		ArrayList<String> returnedProductCategories;
+		
+		try {
+			returnedProductCategories = ProductCategoryService.getAll();
+		} 
+		catch (SQLException e2) {
+
+			e2.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Nie udało się wczytać kategorii produktów", "Błąd", JOptionPane.ERROR_MESSAGE);
+			
+			return;
+		}
+		
+		productCategoriesData = new String[returnedProductCategories.size()];
+		
+		productCategoriesData = returnedProductCategories.toArray(productCategoriesData);
+	}
+	
+	private void initProducers() {
+		
+		ArrayList<String> returnedProducers;
+		
+		try {
+			returnedProducers = ProducerService.getAll();
+		} 
+		catch (SQLException e2) {
+
+			e2.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Nie udało się wczytać producentów", "Błąd", JOptionPane.ERROR_MESSAGE);
+			
+			return;
+		}
+		
+		producersData = new String[returnedProducers.size()];
+		
+		producersData = returnedProducers.toArray(producersData);
+	}
+	
+	private void putProduct() {
+		
+		if(product == null) {
+			
+			return;
+		}
+		
+		this.nameInput.setText(product.getName());
+		this.descriptionInput.setText(product.getDescription());
+		this.priceInput.setText(Double.toString(product.getPrice()));
+		this.weightInput.setText(Double.toString(product.getWeight()));
+		this.heightInput.setText(Double.toString(product.getHeight()));
+		this.widthInput.setText(Double.toString(product.getWidth()));
+		this.taxValueInput.setText(Double.toString(product.getTax_value()));
+		this.productCategories.setSelectedIndex(Long.valueOf(product.getProduct_category_id()-1).intValue());
+		this.producers.setSelectedIndex(Long.valueOf(product.getProducer_id()-1).intValue());
+	}
 
 	public EditProduct(final Shop shop, AbstractProduct product) {
 		
-		setSize(389, 420);
+		setSize(706, 863);
 		
 		this.product = product;
 		
-		events(shop);
+		initProductCategories();
+		initProducers();
+		
 		loadImage();
 		
+		events(shop);
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{70, 81, 89, 78, 70, 0};
-		gridBagLayout.rowHeights = new int[]{63, 27, 32, 54, 33, 41, 15, 41, 48, 0, 0};
+		gridBagLayout.columnWidths = new int[]{102, 81, 325, 85, 114, 0};
+		gridBagLayout.rowHeights = new int[]{90, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 0, 37, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		JLabel title = new JLabel("Zmiana danych produktu");
+		
+		title.setBackground(Color.WHITE);
+		title.setHorizontalAlignment(SwingConstants.CENTER);
 		title.setFont(new Font("Tahoma", Font.PLAIN, 22));
 		
 		GridBagConstraints gbc_title = new GridBagConstraints();
-		gbc_title.fill = GridBagConstraints.VERTICAL;
 		gbc_title.gridwidth = 5;
+		gbc_title.fill = GridBagConstraints.HORIZONTAL;
 		gbc_title.insets = new Insets(0, 0, 5, 0);
 		gbc_title.gridx = 0;
 		gbc_title.gridy = 0;
 		add(title, gbc_title);
 		
-		JLabel nameLabel = new JLabel("Nazwa:");
-		nameLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		GridBagConstraints gbc_nameLabel = new GridBagConstraints();
-		gbc_nameLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_nameLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_nameLabel.gridx = 1;
-		gbc_nameLabel.gridy = 2;
-		add(nameLabel, gbc_nameLabel);
-		
-		nameInput = new JTextField();
+		nameInput = new ValidationTextField(new JTextField(), "Nazwa");
 		GridBagConstraints gbc_nameInput = new GridBagConstraints();
-		gbc_nameInput.fill = GridBagConstraints.HORIZONTAL;
+		gbc_nameInput.anchor = GridBagConstraints.NORTHWEST;
 		gbc_nameInput.insets = new Insets(0, 0, 5, 5);
 		gbc_nameInput.gridx = 2;
 		gbc_nameInput.gridy = 2;
 		add(nameInput, gbc_nameInput);
 		
-		JLabel priceLabel = new JLabel("Cena:");
-		priceLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		GridBagConstraints gbc_priceLabel = new GridBagConstraints();
-		gbc_priceLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_priceLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_priceLabel.gridx = 1;
-		gbc_priceLabel.gridy = 3;
-		add(priceLabel, gbc_priceLabel);
+		descriptionInput = new ValidationTextField(new JTextField(), "Opis");
+		GridBagConstraints gbc_descriptionInput = new GridBagConstraints();
+		gbc_descriptionInput.anchor = GridBagConstraints.NORTHWEST;
+		gbc_descriptionInput.insets = new Insets(0, 0, 5, 5);
+		gbc_descriptionInput.gridx = 2;
+		gbc_descriptionInput.gridy = 3;
+		add(descriptionInput, gbc_descriptionInput);
 		
-		priceInput = new JTextField();
+		priceInput = new ValidationTextField(new JTextField(), "Cena");
+		priceInput.setValidator(ValidatorType.DOUBLE);
 		GridBagConstraints gbc_priceInput = new GridBagConstraints();
-		gbc_priceInput.fill = GridBagConstraints.HORIZONTAL;
+		gbc_priceInput.anchor = GridBagConstraints.NORTHWEST;
 		gbc_priceInput.insets = new Insets(0, 0, 5, 5);
 		gbc_priceInput.gridx = 2;
-		gbc_priceInput.gridy = 3;
+		gbc_priceInput.gridy = 4;
 		add(priceInput, gbc_priceInput);
-	
+		
+		weightInput = new ValidationTextField(new JTextField(), "Waga");
+		weightInput.setValidator(ValidatorType.DOUBLE);
+		GridBagConstraints gbc_weightInput = new GridBagConstraints();
+		gbc_weightInput.anchor = GridBagConstraints.NORTHWEST;
+		gbc_weightInput.insets = new Insets(0, 0, 5, 5);
+		gbc_weightInput.gridx = 2;
+		gbc_weightInput.gridy = 5;
+		add(weightInput, gbc_weightInput);
+		
+		heightInput = new ValidationTextField(new JTextField(), "Wysokość");
+		heightInput.setValidator(ValidatorType.DOUBLE);
+		GridBagConstraints gbc_heightInput = new GridBagConstraints();
+		gbc_heightInput.anchor = GridBagConstraints.NORTHWEST;
+		gbc_heightInput.insets = new Insets(0, 0, 5, 5);
+		gbc_heightInput.gridx = 2;
+		gbc_heightInput.gridy = 6;
+		add(heightInput, gbc_heightInput);
+		
+		widthInput = new ValidationTextField(new JTextField(), "Szerokość");
+		widthInput.setValidator(ValidatorType.DOUBLE);
+		GridBagConstraints gbc_widthInput = new GridBagConstraints();
+		gbc_widthInput.anchor = GridBagConstraints.NORTHWEST;
+		gbc_widthInput.insets = new Insets(0, 0, 5, 5);
+		gbc_widthInput.gridx = 2;
+		gbc_widthInput.gridy = 7;
+		add(widthInput, gbc_widthInput);
+		
+		taxValueInput = new ValidationTextField(new JTextField(), "Wartość podatku");
+		taxValueInput.setValidator(ValidatorType.DOUBLE);
+		GridBagConstraints gbc_taxValueInput = new GridBagConstraints();
+		gbc_taxValueInput.anchor = GridBagConstraints.NORTHWEST;
+		gbc_taxValueInput.insets = new Insets(0, 0, 5, 5);
+		gbc_taxValueInput.gridx = 2;
+		gbc_taxValueInput.gridy = 8;
+		add(taxValueInput, gbc_taxValueInput);
+		
+		productCategories = new JComboBox(productCategoriesData);
+		GridBagConstraints gbc_productCategories = new GridBagConstraints();
+		gbc_productCategories.insets = new Insets(0, 0, 5, 5);
+		gbc_productCategories.fill = GridBagConstraints.HORIZONTAL;
+		gbc_productCategories.gridx = 2;
+		gbc_productCategories.gridy = 10;
+		add(productCategories, gbc_productCategories);
+		
+		producers = new JComboBox(producersData);
+		GridBagConstraints gbc_producers= new GridBagConstraints();
+		gbc_producers.insets = new Insets(0, 0, 5, 5);
+		gbc_producers.fill = GridBagConstraints.HORIZONTAL;
+		gbc_producers.gridx = 2;
+		gbc_producers.gridy = 11;
+		add(producers, gbc_producers);
+		
 		GridBagConstraints gbc_imageLabel = new GridBagConstraints();
 		gbc_imageLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_imageLabel.gridx = 2;
-		gbc_imageLabel.gridy = 4;
+		gbc_imageLabel.gridy = 12;
 		add(imageLabel, gbc_imageLabel);
 		
 		GridBagConstraints gbc_imageInput = new GridBagConstraints();
 		gbc_imageInput.fill = GridBagConstraints.HORIZONTAL;
 		gbc_imageInput.insets = new Insets(0, 0, 5, 5);
 		gbc_imageInput.gridx = 2;
-		gbc_imageInput.gridy = 5;
+		gbc_imageInput.gridy = 13;
 		add(imageInput, gbc_imageInput);
 		
-		GridBagConstraints gbc_saveButton = new GridBagConstraints();
-		gbc_saveButton.fill = GridBagConstraints.HORIZONTAL;
-		gbc_saveButton.insets = new Insets(0, 0, 5, 5);
-		gbc_saveButton.gridx = 2;
-		gbc_saveButton.gridy = 7;
-		add(saveButton, gbc_saveButton);
+		GridBagConstraints gbc_addButton = new GridBagConstraints();
+		gbc_addButton.insets = new Insets(0, 0, 6, 5);
+		gbc_addButton.fill = GridBagConstraints.HORIZONTAL;
+		gbc_addButton.gridx = 2;
+		gbc_addButton.gridy = 15;
+		add(saveButton, gbc_addButton);
 		
 		GridBagConstraints gbc_closeButton = new GridBagConstraints();
+		gbc_closeButton.insets = new Insets(0, 0, 0, 5);
 		gbc_closeButton.fill = GridBagConstraints.HORIZONTAL;
-		gbc_closeButton.insets = new Insets(0, 0, 5, 5);
 		gbc_closeButton.gridx = 2;
-		gbc_closeButton.gridy = 8;
+		gbc_closeButton.gridy = 16;
 		add(closeButton, gbc_closeButton);
 		
+		putProduct();
 	}
 
 }

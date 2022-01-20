@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import JDBC_test.com.JDBC_test.models.AbstractProduct;
 import JDBC_test.com.JDBC_test.models.Employee;
+import JDBC_test.com.JDBC_test.services.ImageService;
 
 public class AbstractProductDAO {
 
@@ -38,7 +39,7 @@ public class AbstractProductDAO {
 		statement.setString(6, product.getDescription());
 		statement.setDouble(7, product.getWeight());
 		statement.setDouble(8, product.getHeight());
-		statement.setDouble(9, product.getHeight());
+		statement.setDouble(9, product.getWidth());
 		statement.setFloat(10, product.getTax_value());
 	}
 
@@ -126,6 +127,47 @@ public class AbstractProductDAO {
 		statement.close();
 		
 		return product;
+	}
+	
+	public static boolean updateById(Long id, AbstractProduct product) throws SQLException {
+		
+		if(id <= 0 || product == null) {
+			
+			return false;
+		}
+		
+		PreparedStatement statement = ConnectionDAO.connection.prepareStatement(
+				  "UPDATE BD_2.ABSTRACT_PRODUCT "
+				+ "SET PRODUCT_CATEGORY_ID=?, PRODUCER_ID=?, IMAGE=?, PRICE=?, NAME=?, "
+				+ "DESCRIPTION=?, WEIGHT=?, HEIGHT=?, WIDTH=?, TAX_VALUE=? "
+				+ "WHERE ID = ?");
+		
+		fillStatement(statement, product);
+		statement.setLong(11, id);  
+		
+		statement.executeUpdate();
+		statement.close();
+		
+		return true;
+	}
+	
+	public static boolean updateImageById(Long id, byte[] image) throws SQLException {
+		
+		if(id <= 0 || image == null) {
+			
+			return false;
+		}
+		
+		PreparedStatement statement = ConnectionDAO.connection.prepareStatement(
+				  "UPDATE BD_2.ABSTRACT_PRODUCT SET image=? WHERE ID = ?");
+	
+		statement.setBytes(1, image);
+		statement.setLong(2, id);
+		
+		statement.executeUpdate();
+		statement.close();
+		
+		return true;
 	}
 	
 	public static boolean deleteById(Long id) throws SQLException {

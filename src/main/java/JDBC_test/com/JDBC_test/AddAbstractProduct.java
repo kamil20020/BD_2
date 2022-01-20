@@ -175,32 +175,16 @@ public class AddAbstractProduct extends JPanel{
 		
 		producersData = returnedProducers.toArray(producersData);
 	}
-	
-	private void loadImage() {
-		
-		BufferedImage myPicture = null;
-		
-		try {
-			
-			myPicture = ImageIO.read(new File("D:\\Program Files\\eclipse1\\eclipse\\workspace\\BD_2_app_try\\src\\main\\resources\\images\\mouse.jpg"));
-		}
-		catch(IOException e) {
-			
-			System.out.println("Nie udalo sie wczytac obrazka produktu");
-		}
-		
-		imageLabel = new JLabel(new ImageIcon(myPicture));
-	}
 
 	public AddAbstractProduct(final Shop shop, final ShopResources shopResources, String[] productCategoriesData) {
 		
 		this.productCategoriesData = productCategoriesData;
 		initProducers();
 		
-		setSize(721, 863);
+		setSize(706, 863);
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{102, 81, 362, 85, 114, 0};
+		gridBagLayout.columnWidths = new int[]{102, 81, 325, 85, 114, 0};
 		gridBagLayout.rowHeights = new int[]{90, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 0, 37, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
@@ -221,67 +205,60 @@ public class AddAbstractProduct extends JPanel{
 		gbc_title.gridy = 0;
 		add(title, gbc_title);
 		
-		nameInput = new ValidationTextField(new JTextField(), "Nazwa");
+		nameInput = new ValidationTextField(new JTextField(), "Nazwa*");
 		GridBagConstraints gbc_nameInput = new GridBagConstraints();
-		gbc_nameInput.gridwidth = 3;
-		gbc_nameInput.anchor = GridBagConstraints.NORTH;
+		gbc_nameInput.anchor = GridBagConstraints.NORTHWEST;
 		gbc_nameInput.insets = new Insets(0, 0, 5, 5);
-		gbc_nameInput.gridx = 1;
+		gbc_nameInput.gridx = 2;
 		gbc_nameInput.gridy = 2;
 		add(nameInput, gbc_nameInput);
 		
-		descriptionInput = new ValidationTextField(new JTextField(), "Opis");
+		descriptionInput = new ValidationTextField(new JTextField(), "Opis*");
 		GridBagConstraints gbc_descriptionInput = new GridBagConstraints();
-		gbc_descriptionInput.gridwidth = 3;
-		gbc_descriptionInput.anchor = GridBagConstraints.NORTH;
+		gbc_descriptionInput.anchor = GridBagConstraints.NORTHWEST;
 		gbc_descriptionInput.insets = new Insets(0, 0, 5, 5);
-		gbc_descriptionInput.gridx = 1;
+		gbc_descriptionInput.gridx = 2;
 		gbc_descriptionInput.gridy = 3;
 		add(descriptionInput, gbc_descriptionInput);
 		
-		priceInput = new ValidationTextField(new JTextField(), "Cena");
+		priceInput = new ValidationTextField(new JTextField(), "Cena*");
 		priceInput.setValidator(ValidatorType.NUMBER);
 		GridBagConstraints gbc_priceInput = new GridBagConstraints();
-		gbc_priceInput.gridwidth = 3;
-		gbc_priceInput.anchor = GridBagConstraints.NORTH;
+		gbc_priceInput.anchor = GridBagConstraints.NORTHWEST;
 		gbc_priceInput.insets = new Insets(0, 0, 5, 5);
-		gbc_priceInput.gridx = 1;
+		gbc_priceInput.gridx = 2;
 		gbc_priceInput.gridy = 4;
 		add(priceInput, gbc_priceInput);
 		
-		weightInput = new ValidationTextField(new JTextField(), "Waga");
+		weightInput = new ValidationTextField(new JTextField(), "Waga*");
 		GridBagConstraints gbc_weightInput = new GridBagConstraints();
-		gbc_weightInput.gridwidth = 3;
-		gbc_weightInput.anchor = GridBagConstraints.NORTH;
+		gbc_weightInput.anchor = GridBagConstraints.NORTHWEST;
 		gbc_weightInput.insets = new Insets(0, 0, 5, 5);
-		gbc_weightInput.gridx = 1;
+		gbc_weightInput.gridx = 2;
 		gbc_weightInput.gridy = 5;
 		add(weightInput, gbc_weightInput);
 		
-		heightInput = new ValidationTextField(new JTextField(), "Wysokość");
+		heightInput = new ValidationTextField(new JTextField(), "Wysokość*");
 		GridBagConstraints gbc_heightInput = new GridBagConstraints();
-		gbc_heightInput.gridwidth = 3;
-		gbc_heightInput.anchor = GridBagConstraints.NORTH;
+		gbc_heightInput.anchor = GridBagConstraints.NORTHWEST;
 		gbc_heightInput.insets = new Insets(0, 0, 5, 5);
-		gbc_heightInput.gridx = 1;
+		gbc_heightInput.gridx = 2;
 		gbc_heightInput.gridy = 6;
 		add(heightInput, gbc_heightInput);
 		
-		widthInput = new ValidationTextField(new JTextField(), "Szerokość");
+		widthInput = new ValidationTextField(new JTextField(), "Szerokość*");
 		GridBagConstraints gbc_widthInput = new GridBagConstraints();
-		gbc_widthInput.gridwidth = 3;
-		gbc_widthInput.anchor = GridBagConstraints.NORTH;
+		gbc_widthInput.anchor = GridBagConstraints.NORTHWEST;
 		gbc_widthInput.insets = new Insets(0, 0, 5, 5);
-		gbc_widthInput.gridx = 1;
+		gbc_widthInput.gridx = 2;
 		gbc_widthInput.gridy = 7;
 		add(widthInput, gbc_widthInput);
 		
-		taxValueInput = new ValidationTextField(new JTextField(), "Wartość podatku");
+		taxValueInput = new ValidationTextField(new JTextField(), "Wartość podatku*");
 		GridBagConstraints gbc_taxValueInput = new GridBagConstraints();
-		gbc_taxValueInput.gridwidth = 3;
-		gbc_taxValueInput.anchor = GridBagConstraints.NORTH;
+		gbc_taxValueInput.anchor = GridBagConstraints.NORTHWEST;
 		gbc_taxValueInput.insets = new Insets(0, 0, 5, 5);
-		gbc_taxValueInput.gridx = 1;
+		gbc_taxValueInput.gridx = 2;
 		gbc_taxValueInput.gridy = 8;
 		add(taxValueInput, gbc_taxValueInput);
 		
