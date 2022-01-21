@@ -30,6 +30,7 @@ public class ShopResources extends JPanel{
 	
 	private JTextField searchInput;
 	private JButton searchButton = new JButton("Wyszukaj");
+	private JButton resetCriteriaButton = new JButton("Resetuj filtr");
 	private JButton addButton = new JButton("Dodaj");
 	private JButton closeButton = new JButton("Zamknij");
 	private JScrollPane products;
@@ -41,6 +42,8 @@ public class ShopResources extends JPanel{
 	
 	private ProductsPanel productsPanel;
 	
+	private String searchPlaceholder = "Wyszukiwarka produktów";
+	
 	private void events(final Shop shop) {
 		
 		final ShopResources shopResources = this;
@@ -50,6 +53,44 @@ public class ShopResources extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				
 				shop.setPanel(new AddAbstractProduct(shop, shopResources, productCategoriesData));
+			}
+		});
+		
+		searchButton.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				String productName = searchInput.getText();
+				
+				if(productName.equals(searchPlaceholder)) {
+					
+					productName = "";
+				}
+				
+				try {
+					Long productCategoryId = Long.valueOf(productCategories.getSelectedIndex()+1);
+					
+					abstractProducts = AbstractProductService.searchByCriteria(productCategoryId, productName);
+					
+					productsPanel = new ProductsPanel(shop, abstractProducts);
+					products.setViewportView(productsPanel);
+				} 
+				catch (SQLException | IOException e1) {
+
+					e1.printStackTrace();
+					return;
+				}
+			}
+		});
+		
+		resetCriteriaButton.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				initProducts();
+				
+				productsPanel = new ProductsPanel(shop, abstractProducts);
+				products.setViewportView(productsPanel);
 			}
 		});
 		
@@ -141,7 +182,7 @@ public class ShopResources extends JPanel{
 		gbc_productCategories.gridy = 1;
 		add(productCategories, gbc_productCategories);
 		
-		searchInput = new PlaceholderJTextField("Wyszukiwarka produktów");
+		searchInput = new PlaceholderJTextField(searchPlaceholder);
 		GridBagConstraints gbc_searchInput = new GridBagConstraints();
 		gbc_searchInput.gridx = 2;
 		gbc_searchInput.gridy = 1;
@@ -157,6 +198,13 @@ public class ShopResources extends JPanel{
 		gbc_searchButton.gridx = 3;
 		gbc_searchButton.gridy = 1;
 		add(searchButton, gbc_searchButton);
+		
+		GridBagConstraints gbc_resetCriteriaButton = new GridBagConstraints();
+		gbc_resetCriteriaButton.insets = new Insets(0, 0, 5, 5);
+		gbc_resetCriteriaButton.fill = GridBagConstraints.HORIZONTAL;
+		gbc_resetCriteriaButton.gridx = 4;
+		gbc_resetCriteriaButton.gridy = 1;
+		add(resetCriteriaButton, gbc_resetCriteriaButton);
 		
 		GridBagConstraints gbc_addButton = new GridBagConstraints();
 		gbc_addButton.insets = new Insets(0, 0, 6, 5);

@@ -65,19 +65,6 @@ public class AbstractProductDAO {
 
 		ArrayList<AbstractProduct> products = getFromResults(results);
 		
-		for(AbstractProduct p : products) {
-			
-			PrintWriter writer = null;
-			try {
-				writer = new PrintWriter("the-file-name.txt", "UTF-8");
-			} catch (FileNotFoundException | UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			writer.println(p.getImage());
-			writer.close();
-		}
-		
 		results.close();
 		statement.close();
 		
@@ -113,6 +100,34 @@ public class AbstractProductDAO {
 		statement.close();
 		
 		return product;
+	}
+	
+	public static ArrayList<AbstractProduct> searchByCriteria(Long productCategoryId, String productName) throws SQLException {
+		
+		String query = "SELECT * FROM BD_2.ABSTRACT_PRODUCT WHERE PRODUCT_CATEGORY_ID = ?";
+		
+		if(!productName.isEmpty()) {
+			
+			query += " AND UPPER(name) LIKE ?";
+		}
+		
+		PreparedStatement statement = ConnectionDAO.connection.prepareStatement(query);
+		
+		statement.setLong(1, productCategoryId);
+		
+		if(!productName.isEmpty()) {
+			
+			statement.setString(2, productName.toUpperCase() + "%");
+		}
+		
+		ResultSet results = statement.executeQuery();
+	
+		ArrayList<AbstractProduct> products = getFromResults(results);
+		
+		results.close();
+		statement.close();
+		
+		return products;
 	}
 	
 	public static AbstractProduct getLast() throws SQLException {

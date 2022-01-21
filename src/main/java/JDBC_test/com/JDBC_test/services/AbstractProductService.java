@@ -1,11 +1,14 @@
 package JDBC_test.com.JDBC_test.services;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 
 import JDBC_test.com.JDBC_test.DAOS.AbstractProductDAO;
+import JDBC_test.com.JDBC_test.DAOS.ConnectionDAO;
 import JDBC_test.com.JDBC_test.DAOS.EmployeeDAO;
 import JDBC_test.com.JDBC_test.DAOS.PhoneDAO;
 import JDBC_test.com.JDBC_test.models.AbstractProduct;
@@ -111,5 +114,14 @@ public class AbstractProductService {
 		}
 		
 		return null;
+	}
+	
+	public static ArrayList<AbstractProduct> searchByCriteria(Long productCategoryId, String productName) throws SQLException, IOException {
+		
+		ArrayList<AbstractProduct> products = AbstractProductDAO.searchByCriteria(productCategoryId, productName);
+		
+		loadDefaultImages(products);
+		
+		return products;
 	}
 }
