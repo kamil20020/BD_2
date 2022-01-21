@@ -1,3 +1,6 @@
+DROP USER BD_2 CASCADE;
+CREATE USER BD_2 IDENTIFIED BY BD_2;
+GRANT ALL PRIVILEGES TO BD_2;
 
 --Create tables-------------------------------------------------------------------------------------------------------
 
