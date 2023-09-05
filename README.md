@@ -1,5 +1,5 @@
 # Sklep z elektroniką (01.2022)
-Aplikacja została zrealizowana w ramach zajęć projektowych Bazy danych 2 na Politechnice Wrocławskiej. Stworzono desktopowy i bazodanowy sklep sieciowy z drobną elektroniką np. myszki, czy laptopy. Głównym powodem stworzenia systemu jest usprawnienie pracy firmy oraz zapewnienie wygodnej i szybkiej obsługi klienta. Wstępnie zakładano, że dla klienta będzie zrealizowana aplikacja webowa, a dla pracownika desktopowa, ale niestety z powodu braku wystarczającego czasu udało się jedynie zrealizować w dużej części aplikację dla pracownika.
+Aplikacja została zrealizowana w ramach zajęć projektowych Bazy danych 2 na Politechnice Wrocławskiej. Stworzono desktopowy i bazodanowy sklep sieciowy z drobną elektroniką np. myszki, czy laptopy. Głównym powodem stworzenia systemu jest usprawnienie pracy firmy oraz zapewnienie wygodnej i szybkiej obsługi klienta. Wstępnie zakładano, że dla klienta będzie zrealizowana aplikacja webowa, a dla pracownika desktopowa, ale niestety z powodu braku wystarczającego czasu udało się jedynie zrealizować w dużej części aplikację dla pracownika. 
 
 Do uruchomienia aplikacji będą potrzebne:
 * Zainstalowanie DBMS Oracle Database,
